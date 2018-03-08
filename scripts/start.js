@@ -12,9 +12,7 @@ const express = require('express');
 
 const MemoryFileSystem = require('memory-fs');
 
-const developmentAssetManifest = {
-  client: 'assets/web-client.js'
-};
+const developmentAssetManifest = require('../config/developmentAssetManifest.js');
 
 const compiler = webpack([
   webpackConfigClient(),
