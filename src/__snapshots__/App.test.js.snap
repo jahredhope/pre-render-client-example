@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App should render 1`] = `
+<div>
+  <Styled(div)>
+    <Styled(div)
+      heading={true}
+    >
+      Base Application
+    </Styled(div)>
+    <Styled(div)>
+      A simple boilerplate application
+    </Styled(div)>
+  </Styled(div)>
+  <Styled(div)
+    transparent={true}
+  >
+    <br />
+    <Styled(div)>
+      Sun Jan 01 2017 23:00:00 GMT+1100 (AEDT)
+    </Styled(div)>
+  </Styled(div)>
+</div>
+`;

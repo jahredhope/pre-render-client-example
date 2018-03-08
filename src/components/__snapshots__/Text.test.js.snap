@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Text should render body text 1`] = `
+<div
+  className="css-1sbhzye ekj1ype0"
+>
+  foo
+</div>
+`;
+
+exports[`Text should render heading 1`] = `
+<div
+  className="css-wcfrey ekj1ype0"
+>
+  foo
+</div>
+`;

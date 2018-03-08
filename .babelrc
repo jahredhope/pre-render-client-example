@@ -1,0 +1,4 @@
+{
+  "plugins": ["transform-class-properties", "babel-plugin-emotion"],
+  "presets": ["babel-preset-react", "babel-preset-env"]
+}
