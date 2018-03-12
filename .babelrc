@@ -1,4 +1,8 @@
 {
-  "plugins": ["transform-class-properties", "babel-plugin-emotion"],
+  "plugins": [
+    "transform-class-properties",
+    "babel-plugin-emotion",
+    "syntax-dynamic-import"
+  ],
   "presets": ["babel-preset-react", "babel-preset-env"]
 }

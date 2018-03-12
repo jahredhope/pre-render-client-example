@@ -1,10 +1,18 @@
 import React, { Component } from 'react';
-
+import { Switch, Route } from 'react-router';
+import { Link } from 'react-router-dom';
 import { injectGlobal } from 'emotion';
 // import styled from 'react-emotion';
 
+import AuthorPage from './pages/AuthorPage';
+import HomePage from './pages/HomePage';
+import BookPage from './pages/BookPage';
+
 import Card from './components/Card';
 import Text from './components/Text';
+import HorizontalBar from './components/HorizontalBar';
+let BigFile;
+// import BigFile from './components/BigFile';
 
 import reset from './reset';
 
@@ -18,6 +26,14 @@ injectGlobal`
   }
 `;
 
+function onMount() {
+  return import(/* webpackChunkName: "bigfile" */ './components/BigFile').then(
+    _module => {
+      BigFile = _module.default;
+    }
+  );
+}
+
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -27,6 +43,7 @@ export default class App extends Component {
   }
   componentDidMount() {
     this.updateTimeRendered();
+    onMount().then(() => this.forceUpdate());
   }
   updateTimeRendered = () => {
     this.setState({
@@ -41,12 +58,31 @@ export default class App extends Component {
           <Text heading>Base Application</Text>
           <Text>A simple boilerplate application</Text>
         </Card>
+        <Card>
+          <HorizontalBar>
+            <Text>
+              <Link to="/">Home</Link>
+            </Text>
+            <Text>
+              <Link to="/author/:id">Author</Link>
+            </Text>
+            <Text>
+              <Link to="/book/:id">Book</Link>
+            </Text>
+          </HorizontalBar>
+        </Card>
         {this.state.timeRendered && (
           <Card transparent>
             <br />
             <Text>{this.state.timeRendered}</Text>
           </Card>
         )}
+        {BigFile && <BigFile />}
+        <Switch>
+          <Route exact path="/" component={HomePage} />
+          <Route path="/author/:id" component={AuthorPage} />
+          <Route path="/book/:id" component={BookPage} />
+        </Switch>
       </div>
     );
   }

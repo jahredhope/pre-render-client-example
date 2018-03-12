@@ -1,5 +1,3 @@
-const StaticSiteGeneratorPlugin = require('static-site-generator-webpack-plugin');
-
 const { jsLoaders, svgLoaders, imageLoaders } = require('./loaders');
 const { renderEntry, dist } = require('./paths');
 
@@ -20,22 +18,20 @@ const config = ({ manifestAssets }) => {
     target: 'node',
     output: {
       path: dist,
+      publicPath: '/',
       filename: isProductionBuild
         ? 'node-[name]-[chunkHash].js'
-        : 'node-[name].js',
+        : 'node-[name]-development.js',
       libraryTarget: 'umd'
     },
     module: {
       rules: [...jsLoaders, ...imageLoaders, ...svgLoaders]
     },
-    plugins: [
-      new StaticSiteGeneratorPlugin({
-        entry: 'render',
-        locals: {
-          manifestAssets
-        }
-      })
-    ]
+    node: {
+      fs: 'empty',
+      path: 'empty'
+    },
+    plugins: []
   };
 };
 
