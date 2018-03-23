@@ -2,7 +2,18 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router';
 import { Link } from 'react-router-dom';
 import { injectGlobal } from 'emotion';
-// import styled from 'react-emotion';
+import Loadable from 'react-loadable';
+import styled from 'react-emotion';
+
+const Loading = styled('div')({
+  height: `${10 * 6}px`
+});
+
+// eslint-disable-next-line new-cap
+const BigFile = Loadable({
+  loader: () => import('./components/BigFile').then(_module => _module.default),
+  loading: () => {}
+});
 
 import AuthorPage from './pages/AuthorPage';
 import HomePage from './pages/HomePage';
@@ -11,8 +22,6 @@ import BookPage from './pages/BookPage';
 import Card from './components/Card';
 import Text from './components/Text';
 import HorizontalBar from './components/HorizontalBar';
-let BigFile;
-// import BigFile from './components/BigFile';
 
 import reset from './reset';
 
@@ -24,15 +33,12 @@ injectGlobal`
     background-color: hsl(190, 5%, 96%);
     font-family: Helvetica,Arial,sans-serif;
   }
+  h1 {
+    font-size: unset;
+    margin: unset;
+    font-weight: unset;
+  }
 `;
-
-function onMount() {
-  return import(/* webpackChunkName: "bigfile" */ './components/BigFile').then(
-    _module => {
-      BigFile = _module.default;
-    }
-  );
-}
 
 export default class App extends Component {
   constructor(props) {
@@ -43,7 +49,6 @@ export default class App extends Component {
   }
   componentDidMount() {
     this.updateTimeRendered();
-    onMount().then(() => this.forceUpdate());
   }
   updateTimeRendered = () => {
     this.setState({
@@ -71,12 +76,12 @@ export default class App extends Component {
             </Text>
           </HorizontalBar>
         </Card>
-        {this.state.timeRendered && (
+        {this.state.timeRendered ? (
           <Card transparent>
             <br />
             <Text>{this.state.timeRendered}</Text>
           </Card>
-        )}
+        ) : <Loading />}
         {BigFile && <BigFile />}
         <Switch>
           <Route exact path="/" component={HomePage} />

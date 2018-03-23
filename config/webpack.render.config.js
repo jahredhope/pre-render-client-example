@@ -4,12 +4,7 @@ const { renderEntry, dist } = require('./paths');
 const isProductionBuild = process.env.NODE_ENV === 'production';
 const webpackMode = isProductionBuild ? 'production' : 'development';
 
-const config = ({ manifestAssets }) => {
-  if (!manifestAssets) {
-    throw new Error(
-      `Missing manifestAssets: Render must be able to link to web assets`
-    );
-  }
+const config = () => {
   return {
     mode: webpackMode,
     entry: {

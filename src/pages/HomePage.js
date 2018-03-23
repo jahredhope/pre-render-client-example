@@ -1,9 +1,11 @@
 import React from 'react';
+import Text from '../components/Text';
+import Card from '../components/Card';
 
 const pageName = 'Home Page';
 export default function HomePage() {
-  return <div>
-    <h1>{pageName}</h1>
-    <div>This is the {pageName.toLowerCase()}</div>
-  </div>
+  return <Card>
+    <Text heading>{pageName}</Text>
+    <Text>This is the {pageName.toLowerCase()}</Text>
+  </Card>
 }

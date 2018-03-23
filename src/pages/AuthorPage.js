@@ -1,45 +1,30 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Text from '../components/Text';
 import Card from '../components/Card';
 
-import load from '../async/author';
-
 const pageName = 'Author Page';
-let AuthorImage;
 
-function AuthorPage() {
+import Loadable from 'react-loadable';
+
+// eslint-disable-next-line new-cap
+const LoadableComponent = Loadable({
+  loader: () =>
+    import('../components/AuthorImage').then(_module => _module.default),
+  loading: () => (
+    <Card transparent>
+      <Text>loading...</Text>
+    </Card>
+  )
+});
+
+export default function AuthorPage() {
   return (
-    <div>
+    <Card>
       <Text heading>
         <h1>{pageName}</h1>
       </Text>
       <Text>This is the {pageName.toLowerCase()}</Text>
-      <AuthorImage />
-    </div>
+      <LoadableComponent />
+    </Card>
   );
-}
-
-export default class AuthorPageLoader extends Component {
-  constructor(props) {
-    super(props);
-    const { image, imagePromise } = load();
-    this.state = { isLoaded: false };
-    if (image) {
-      AuthorImage = image;
-      this.state.isLoaded = true;
-    } else {
-      imagePromise.then(loadedImage => {
-        AuthorImage = loadedImage;
-        this.setState({ isLoaded: true });
-      });
-    }
-  }
-  render() {
-    const props = this.props;
-
-    if (!this.state.isLoaded) {
-      return <Card transparent>loading...</Card>;
-    }
-    return <AuthorPage {...props} />;
-  }
 }

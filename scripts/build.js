@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 // const { spawnSync } = require('child_process');
 const runRender = require('./runRender');
 
@@ -36,39 +37,37 @@ function printStats(stats, buildName) {
 }
 
 const runWebpack = async () => {
-  const clientStats = await webpack(
-    webpackConfigClient({ assetsPublicPath: publicPath })
-  );
-  printStats(clientStats, 'Client');
-  const { assetsByChunkName } = clientStats.toJson({
-    assets: true,
-    chunks: false
-  });
+  const { stats } = await webpack([
+    webpackConfigClient({ assetsPublicPath: publicPath }),
+    webpackConfigRender({ assetsPublicPath: publicPath })
+  ]);
 
-  const renderStats = await webpack(
-    webpackConfigRender({
-      assetsPublicPath: publicPath,
-      manifestAssets: assetsByChunkName
-    })
-  );
-  printStats(renderStats, 'Render');
-  return [clientStats, renderStats];
+  printStats(stats[0], 'Client');
+  printStats(stats[1], 'Render');
+  return stats;
 };
 
 runWebpack()
   .then(stats => {
     console.log('Build complete!');
-    const renderStats = stats[1].toJson({ assets: true, chunks: false });
-    const outputPath = renderStats.outputPath;
+    const { outputPath, assetsByChunkName: webAssets } = stats[0].toJson({
+      assets: true
+    });
+    const nodeAssets = stats[1].toJson({ assets: true }).assetsByChunkName;
     console.log('outputPath', outputPath);
-    const renderEntry = stats[1].toJson({ assets: true }).assetsByChunkName
-      .render;
     const manifestEntry = 'manifest.json';
 
+    const loadableStats = JSON.parse(
+      fs.readFileSync(path.join(outputPath, 'react-loadable.json'), 'utf8')
+    );
+    console.log('Loaded loadable stats');
+
     runRender({
-      entry: path.join(outputPath, renderEntry),
       manifestEntry: path.join(outputPath, manifestEntry),
       paths: ['/', '/book/:id', '/author/:id', '/fake'],
+      webAssets,
+      nodeAssets,
+      loadableStats,
       outputPath,
       publicPath
     });

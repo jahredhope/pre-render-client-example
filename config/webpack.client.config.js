@@ -1,5 +1,6 @@
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
+const { ReactLoadablePlugin } = require('react-loadable/webpack');
 
 const { jsLoaders, svgLoaders, imageLoaders } = require('./loaders');
 const { clientEntry, dist } = require('./paths');
@@ -10,13 +11,16 @@ const webpackMode = isProductionBuild ? 'production' : 'development';
 const config = ({ assetsPublicPath }) => ({
   mode: webpackMode,
   entry: {
-    client: clientEntry
+    client: ['babel-polyfill', clientEntry]
   },
   target: 'web',
   optimization: {
     splitChunks: {
       chunks: 'all',
       name: 'vendor'
+    },
+    runtimeChunk: {
+      name: 'manifest'
     }
   },
   output: {
@@ -34,7 +38,10 @@ const config = ({ assetsPublicPath }) => ({
   },
   plugins: [
     new CleanWebpackPlugin([dist], { allowExternal: true }),
-    new ManifestPlugin()
+    new ManifestPlugin(),
+    new ReactLoadablePlugin({
+      filename: './dist/react-loadable.json'
+    })
   ]
 });
 

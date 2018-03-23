@@ -10,16 +10,19 @@ function travAssets(manifestAssets, publicPath) {
 }
 
 module.exports = function runRender({
-  entry,
+  webAssets,
+  nodeAssets,
   publicPath,
   outputPath,
   paths,
-  manifestEntry
+  loadableStats
 }) {
-  console.log('loading entry', entry);
+  console.log('webAssets', webAssets)
+  console.log('nodeAssets', nodeAssets)
+  console.log('outputPath', outputPath);
 
-  const render = require(entry).default;
-  const manifest = require(manifestEntry);
+  const render = require(path.join(outputPath, nodeAssets.render)).default;
+  const manifest = require(path.join(outputPath, 'manifest.json'));
 
   const assets = travAssets(manifest, publicPath);
 
@@ -28,6 +31,7 @@ module.exports = function runRender({
       try {
         const html = await render({
           manifestAssets: assets,
+          loadableStats,
           path: dir
         });
         console.log('Successfully rendered: ', dir);
